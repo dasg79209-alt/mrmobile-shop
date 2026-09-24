@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ phone.name }} - MR.Mobile</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', Arial, sans-serif; }
+        body { background: #f1f3f6; color: #212121; }
+
+        .navbar { background: #2874f0; padding: 12px 8%; display: flex; align-items: center; justify-content: space-between; }
+        .logo-title { color: #fff; font-size: 20px; font-weight: bold; text-decoration: none; }
+        
+        .container { max-width: 1180px; margin: 20px auto; padding: 0 15px; }
+        .main-box { background: #fff; padding: 25px; border-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); display: flex; gap: 40px; flex-wrap: wrap; }
+        
+        /* Multiple Images Gallery */
+        .image-col { flex: 1; min-width: 320px; }
+        .main-display-img { width: 100%; height: 350px; object-fit: contain; margin-bottom: 12px; }
+        .thumb-row { display: flex; gap: 10px; justify-content: center; }
+        .thumb-img { width: 60px; height: 60px; object-fit: contain; border: 2px solid #ddd; border-radius: 4px; cursor: pointer; padding: 2px; }
+        .thumb-img.active, .thumb-img:hover { border-color: #2874f0; }
+
+        .detail-col { flex: 1.5; min-width: 320px; }
+        .delivery-badge { background: #e8f5e9; color: #2e7d32; font-weight: bold; font-size: 13px; padding: 4px 10px; border-radius: 3px; display: inline-block; margin-bottom: 8px; }
+        .title { font-size: 24px; font-weight: bold; margin-bottom: 6px; }
+        .rating { background: #388e3c; color: white; padding: 2px 8px; border-radius: 3px; font-size: 13px; font-weight: bold; display: inline-block; }
+        
+        .price-box { margin: 15px 0; display: flex; align-items: baseline; gap: 12px; }
+        .price { font-size: 28px; font-weight: bold; }
+        .mrp { color: #878787; text-decoration: line-through; font-size: 16px; }
+        .off { color: #388e3c; font-weight: bold; font-size: 16px; }
+
+        .btn-group { display: flex; gap: 15px; margin: 25px 0; }
+        .btn-cart { background: #ff9f00; color: white; padding: 14px 30px; text-decoration: none; font-weight: bold; border-radius: 2px; }
+        .btn-buy { background: #fb641b; color: white; padding: 14px 40px; text-decoration: none; font-weight: bold; border-radius: 2px; }
+
+        .desc-box { border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px; line-height: 1.6; }
+        .reviews-section { border-top: 1px solid #eee; padding-top: 20px; margin-top: 25px; }
+        .review-card { background: #fafafa; border-radius: 4px; padding: 10px; margin-bottom: 8px; border: 1px solid #eee; }
+
+        /* More Phones Feed Section */
+        .more-section { background: white; padding: 20px; border-radius: 4px; margin-top: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; margin-top: 15px; }
+        .feed-card { border: 1px solid #f0f0f0; border-radius: 4px; padding: 12px; text-align: left; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; }
+        .feed-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .feed-img { height: 160px; object-fit: contain; width: 100%; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <a href="/" class="logo-title">MR.Mobile</a>
+        <div>
+            <a href="/my-orders" style="color:white; margin-right:15px; text-decoration:none; font-weight:bold;">📦 My Orders</a>
+            <a href="/cart" style="color:white; text-decoration:none; font-weight:bold;">🛒 Cart ({{ cart_count }})</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-box">
+            <!-- একাধিক ছবি গ্যালারি -->
+            <div class="image-col">
+                <img id="mainImg" src="{{ phone.images[0] }}" class="main-display-img">
+                <div class="thumb-row">
+                    {% for img in phone.images %}
+                    <img src="{{ img }}" class="thumb-img {% if loop.first %}active{% endif %}" onclick="changeImg('{{ img }}', this)">
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="detail-col">
+                <span class="delivery-badge">⚡ Delivery in 2 Days</span>
+                <h1 class="title">{{ phone.name }}</h1>
+                <div style="font-size:14px; color:#555; margin-bottom:8px;">{{ phone.ram_rom }}</div>
+                <span class="rating">{{ phone.rating }} ★</span>
+
+                <div class="price-box">
+                    <span class="price">₹{{ "{:,.0f}".format(phone.price) }}</span>
+                    {% if phone.original_price %}
+                    <span class="mrp">₹{{ "{:,.0f}".format(phone.original_price) }}</span>
+                    <span class="off">{{ phone.discount }}</span>
+                    {% endif %}
+                </div>
+
+                <div style="background:#e3f2fd; color:#1976d2; padding:10px; border-radius:4px; font-weight:bold; font-size:13px;">
+                    💳 বুকিং অফার: ২০% (₹{{ "{:,.0f}".format(phone.price * 0.20) }}) অগ্রিম দিয়ে বুক করুন। বাকি ৮০% ক্যাশ অন ডেলিভারি!
+                </div>
+
+                <div class="btn-group">
+                    <a href="/cart/add/{{ phone.id }}" class="btn-cart">ADD TO CART</a>
+                    <a href="/buy/{{ phone.id }}" class="btn-buy">BUY NOW</a>
+                </div>
+
+                <div class="desc-box">
+                    <h3>প্রোডাক্ট বিবরণ ও ফিচারসমূহ</h3>
+                    <p style="margin-top:8px; color:#444;">{{ phone.description }}</p>
+                </div>
+
+                <!-- রেটিং ও রিভিউ -->
+                <div class="reviews-section">
+                    <h3>Ratings & Customer Reviews</h3>
+                    {% for r in phone.reviews %}
+                    <div class="review-card">
+                        <div style="font-weight:bold; font-size:13px;">{{ r.user }} <span style="color:#388e3c;">{{ r.stars }} ★</span></div>
+                        <p style="font-size:13px; color:#555; margin-top:3px;">{{ r.comment }}</p>
+                    </div>
+                    {% endfor %}
+
+                    <form action="/product/{{ phone.id }}/review" method="POST" style="margin-top:12px;">
+                        <input type="text" name="user" placeholder="আপনার নাম" required style="padding:8px; border:1px solid #ccc; width:180px; border-radius:3px;">
+                        <input type="text" name="comment" placeholder="রিভিউ লিখুন..." required style="padding:8px; border:1px solid #ccc; width:280px; border-radius:3px;">
+                        <button type="submit" style="padding:8px 15px; background:#2874f0; color:white; border:none; border-radius:3px; cursor:pointer;">সাবমিট</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- বাকি ফোনগুলোর অন্তহীন ফিড (More Phones Feed) -->
+        <div class="more-section">
+            <h3>Similar & Trending Mobiles (আরো ফোন দেখুন)</h3>
+            <div class="product-grid">
+                {% for p in more_phones %}
+                <a href="/product/{{ p.id }}" class="feed-card">
+                    <img src="{{ p.images[0] }}" class="feed-img">
+                    <div style="font-weight:bold; font-size:14px; margin-bottom:4px;">{{ p.name }}</div>
+                    <div style="font-size:12px; color:#666;">{{ p.ram_rom }}</div>
+                    <div style="font-weight:bold; color:#212121; margin-top:6px;">₹{{ "{:,.0f}".format(p.price) }}</div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function changeImg(src, element) {
+            document.getElementById('mainImg').src = src;
+            document.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+        }
+    </script>
+</body>
+</html>

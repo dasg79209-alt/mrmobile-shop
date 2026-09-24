@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MR.Mobile - Flipkart Style Shopping</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', Arial, sans-serif; }
+        body { background-color: #f1f3f6; color: #212121; }
+
+        .navbar { background: #2874f0; padding: 12px 8%; display: flex; align-items: center; justify-content: space-between; gap: 20px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .logo-box { text-decoration: none; display: flex; flex-direction: column; }
+        .logo-title { color: #fff; font-size: 22px; font-weight: 800; font-style: italic; }
+        .logo-sub { color: #ffe500; font-size: 11px; font-weight: bold; font-style: italic; }
+
+        .search-area { flex: 1; max-width: 580px; display: flex; background: #fff; border-radius: 2px; overflow: hidden; }
+        .search-area input { width: 100%; border: none; padding: 11px 16px; outline: none; font-size: 14px; }
+        .search-area button { background: #fff; border: none; padding: 0 18px; cursor: pointer; color: #2874f0; font-size: 15px; font-weight: bold; }
+
+        .nav-links { display: flex; align-items: center; gap: 20px; }
+        .nav-links a { color: #fff; text-decoration: none; font-size: 14px; font-weight: bold; }
+        .cart-badge { background: #ffe500; color: #000; border-radius: 12px; padding: 2px 7px; font-size: 12px; font-weight: bold; margin-left: 4px; }
+
+        .container { max-width: 1240px; margin: 15px auto; padding: 0 12px; }
+
+        /* ডাইনামিক স্লাইডার (ঘুরবে ও পরিবর্তন হবে) */
+        .slider-box { position: relative; border-radius: 4px; overflow: hidden; height: 280px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+        .slide { display: none; height: 100%; position: relative; background-size: cover; background-position: center; }
+        .slide.active { display: block; }
+        .slide-overlay { background: linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 100%); height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 0 50px; color: white; }
+        .slide-badge { background: #ffe500; color: #000; font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 12px; width: fit-content; margin-bottom: 10px; }
+        .slide h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+        .slide p { font-size: 16px; max-width: 600px; color: #eee; }
+
+        /* Products Grid */
+        .section-box { background: #fff; padding: 18px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .section-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; margin-bottom: 20px; }
+        
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .product-card { border: 1px solid #f0f0f0; border-radius: 4px; padding: 15px; background: #fff; transition: 0.25s; display: flex; flex-direction: column; justify-content: space-between; text-align: left; }
+        .product-card:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.12); transform: translateY(-3px); }
+
+        .img-wrap { height: 210px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; cursor: pointer; }
+        .img-wrap img { max-height: 200px; max-width: 100%; object-fit: contain; }
+
+        .delivery-tag { display: inline-block; background: #e8f5e9; color: #2e7d32; font-size: 12px; font-weight: bold; padding: 3px 8px; border-radius: 3px; margin-bottom: 6px; }
+        .stock-tag { font-size: 12px; font-weight: bold; color: #d32f2f; margin-bottom: 6px; }
+        .product-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; color: #212121; text-decoration: none; display: block; }
+        .product-title:hover { color: #2874f0; }
+
+        .price-row { display: flex; align-items: baseline; gap: 8px; margin: 10px 0; }
+        .price-now { font-size: 20px; font-weight: 800; color: #212121; }
+        .price-old { font-size: 13px; color: #878787; text-decoration: line-through; }
+        .discount { font-size: 13px; font-weight: bold; color: #388e3c; }
+
+        .action-row { display: flex; gap: 8px; margin-top: 10px; }
+        .cart-btn { background: #ff9f00; color: #fff; text-decoration: none; padding: 10px; flex: 1; text-align: center; font-size: 13px; font-weight: bold; border-radius: 2px; }
+        .buy-btn { background: #fb641b; color: #fff; text-decoration: none; padding: 10px; flex: 1; text-align: center; font-size: 13px; font-weight: bold; border-radius: 2px; }
+
+        .footer { background: #172337; color: #878787; padding: 25px 8%; margin-top: 40px; font-size: 13px; text-align: center; }
+        .secret-admin { color: #23334d; text-decoration: none; font-size: 11px; margin-left: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <a href="/" class="logo-box">
+            <span class="logo-title">MR.Mobile</span>
+            <span class="logo-sub">Explore Plus ✦</span>
+        </a>
+
+        <form action="/" method="GET" class="search-area">
+            <input type="text" name="search" value="{{ query }}" placeholder="Search 'under 27k', 'Samsung', 'iPhone'...">
+            <button type="submit">🔍</button>
+        </form>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/my-orders">📦 My Orders</a>
+            <a href="/cart">🛒 Cart <span class="cart-badge">{{ cart_count }}</span></a>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- ব্যানার স্লাইডার -->
+        {% if banners %}
+        <div class="slider-box">
+            {% for b in banners %}
+            <div class="slide {% if loop.first %}active{% endif %}" style="background-image: url('{{ b.image }}');">
+                <div class="slide-overlay">
+                    <span class="slide-badge">{{ b.badge }}</span>
+                    <h1>{{ b.title }}</h1>
+                    <p>{{ b.subtitle }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- প্রোডাক্ট গ্রিড -->
+        <div class="section-box">
+            <div class="section-header">
+                <h2>All Available Smartphones</h2>
+                <span style="font-size: 13px; color:#878787;">Showing {{ phones|length }} Items</span>
+            </div>
+
+            <div class="product-grid">
+                {% for phone in phones %}
+                <div class="product-card">
+                    <a href="/product/{{ phone.id }}" class="img-wrap">
+                        <img src="{{ phone.images[0] }}" alt="{{ phone.name }}">
+                    </a>
+
+                    <div>
+                        <div class="delivery-tag">⚡ Delivery in 2 Days</div>
+                        {% if phone.stock > 0 %}
+                            <div class="stock-tag">{{ phone.stock }} items in stock</div>
+                        {% else %}
+                            <div class="stock-tag">Stock Out</div>
+                        {% endif %}
+
+                        <a href="/product/{{ phone.id }}" class="product-title">{{ phone.name }}</a>
+                        <div style="font-size:12px; color:#666;">{{ phone.ram_rom }}</div>
+
+                        <div class="price-row">
+                            <span class="price-now">₹{{ "{:,.0f}".format(phone.price) }}</span>
+                            {% if phone.original_price %}
+                            <span class="price-old">₹{{ "{:,.0f}".format(phone.original_price) }}</span>
+                            <span class="discount">{{ phone.discount }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if phone.stock > 0 %}
+                    <div class="action-row">
+                        <a href="/cart/add/{{ phone.id }}" class="cart-btn">ADD TO CART</a>
+                        <a href="/buy/{{ phone.id }}" class="buy-btn">BUY NOW</a>
+                    </div>
+                    {% else %}
+                    <button class="buy-btn" style="background:#ccc; cursor:not-allowed;" disabled>OUT OF STOCK</button>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 MR.Mobile Store. All Rights Reserved. 
+        <a href="/admin" class="secret-admin" title="Admin">●</a></p>
+    </div>
+
+    <script>
+        let cur = 0;
+        const slides = document.querySelectorAll('.slide');
+        if(slides.length > 1) {
+            setInterval(() => {
+                slides[cur].classList.remove('active');
+                cur = (cur + 1) % slides.length;
+                slides[cur].classList.add('active');
+            }, 4500);
+        }
+    </script>
+</body>
+</html>

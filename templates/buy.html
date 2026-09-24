@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অর্ডার বুকিং - MR.Mobile</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f1f3f6; margin: 0; padding: 25px 15px; }
+        .box { background: white; max-width: 520px; margin: 0 auto; padding: 25px; border-radius: 6px; box-shadow: 0 1px 6px rgba(0,0,0,0.1); }
+        .field { margin-bottom: 14px; }
+        label { font-size: 13px; font-weight: bold; color: #333; display: block; margin-bottom: 5px; }
+        input, textarea { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        .payment-card { background: #fafafa; border: 2px dashed #2874f0; border-radius: 6px; padding: 15px; text-align: center; margin: 15px 0; }
+        .qr-img { width: 190px; height: 190px; margin: 10px auto; display: block; background: #fff; padding: 5px; border: 1px solid #ddd; }
+        .btn { background: #fb641b; color: white; border: none; width: 100%; padding: 13px; font-size: 16px; font-weight: bold; border-radius: 3px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <div style="display:flex; gap:12px; border-bottom:1px solid #eee; padding-bottom:12px; margin-bottom:15px;">
+            <img src="{{ phone.image }}" style="width:70px; height:70px; object-fit:contain;">
+            <div>
+                <span style="background:#e8f5e9; color:#2e7d32; font-size:11px; font-weight:bold; padding:2px 6px;">⚡ Delivery in 2 Days</span>
+                <h3 style="margin:4px 0;">{{ phone.name }}</h3>
+                <div style="color:#212121; font-weight:bold;">মোট দাম: ₹{{ "{:,.0f}".format(phone.price) }}</div>
+            </div>
+        </div>
+
+        <div class="payment-card">
+            <h4 style="color:#2874f0; margin:0 0 5px;">২০% অগ্রিম স্ক্যানার (COD বুকিং)</h4>
+            <div style="font-size:13px; color:#2e7d32; font-weight:bold; margin-bottom:8px;">অনলাইনে পরিশোধযোগ্য: ₹{{ "{:,.0f}".format(advance_20) }}</div>
+            <img src="{{ qr_url }}" alt="UPI QR" class="qr-img">
+            <div style="font-size:12px; color:#666;">স্ক্যান করে ২০% পেমেন্ট সম্পন্ন করুন</div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            <div class="field">
+                <label>আপনার নাম:</label>
+                <!-- একবার দিলে সেশনে সেভ থাকবে, পরের বার অটো বসবে -->
+                <input type="text" name="name" value="{{ saved_name }}" required>
+            </div>
+
+            <div class="field">
+                <label>মোবাইল নম্বর:</label>
+                <input type="tel" name="phone" value="{{ saved_phone }}" required>
+            </div>
+
+            <div class="field">
+                <label>সম্পূর্ণ ডেলিভারি ঠিকানা:</label>
+                <textarea name="address" rows="3" required>{{ saved_address }}</textarea>
+            </div>
+
+            <div class="field">
+                <label>Transaction / UTR ID:</label>
+                <input type="text" name="txn_id" placeholder="১২ সংখ্যার UTR নম্বর দিন" required>
+            </div>
+
+            <div class="field">
+                <label>পেমেন্টের স্ক্রিনশট বা রসিদ আপলোড করুন (ভেরিফিকেশনের জন্য):</label>
+                <input type="file" name="screenshot" accept="image/*" required>
+            </div>
+
+            <button type="submit" class="btn">অর্ডার নিশ্চিত করুন</button>
+        </form>
+    </div>
+
+</body>
+</html>

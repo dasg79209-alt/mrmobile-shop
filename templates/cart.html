@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - MR.Mobile</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f1f3f6; margin: 0; padding: 25px 15px; }
+        .cart-container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+        .cart-item { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; padding: 15px 0; }
+        .cart-img { width: 70px; height: 70px; object-fit: contain; }
+        .remove-btn { color: #d32f2f; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .total-box { margin-top: 20px; text-align: right; font-size: 20px; font-weight: bold; }
+        .btn-buy { background: #fb641b; color: white; padding: 12px 30px; text-decoration: none; border-radius: 2px; font-weight: bold; display: inline-block; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="cart-container">
+        <h2>Your Shopping Cart ({{ items|length }})</h2>
+        {% if items %}
+            {% for item in items %}
+            <div class="cart-item">
+                <img src="{{ item.image }}" alt="{{ item.name }}" class="cart-img">
+                <div style="flex:1; margin-left:15px;">
+                    <h4 style="margin:0 0 5px;">{{ item.name }}</h4>
+                    <div style="color:#388e3c; font-weight:bold;">₹{{ "{:,.0f}".format(item.price) }}</div>
+                </div>
+                <div>
+                    <a href="/buy/{{ item.id }}" style="margin-right:15px; color:#2874f0; text-decoration:none; font-weight:bold;">Order Now</a>
+                    <a href="/cart/remove/{{ item.id }}" class="remove-btn">Remove</a>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="total-box">
+                মোট মূল্য: ₹{{ "{:,.0f}".format(total) }}
+            </div>
+        {% else %}
+            <p style="color:#777; margin:20px 0;">আপনার কার্ট বর্তমানে খালি আছে!</p>
+            <a href="/" style="color:#2874f0; text-decoration:none; font-weight:bold;">← মোবাইল কেনাকাটা শুরু করুন</a>
+        {% endif %}
+    </div>
+
+</body>
+</html>

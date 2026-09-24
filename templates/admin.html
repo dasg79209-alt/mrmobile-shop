@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MR.Mobile Admin Center</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #eef2f5; margin: 0; padding: 20px; }
+        .topbar { background: #2874f0; padding: 14px 20px; color: white; display: flex; justify-content: space-between; border-radius: 4px; align-items: center; }
+        .card { background: white; padding: 20px; border-radius: 4px; margin-top: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        input, select, textarea { padding: 8px 10px; margin: 4px 0; border: 1px solid #ccc; border-radius: 3px; font-size: 13px; }
+        .btn { background: #2874f0; color: white; border: none; padding: 9px 16px; border-radius: 3px; cursor: pointer; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #e0e0e0; padding: 8px; text-align: left; font-size: 13px; }
+        th { background: #f8f9fa; }
+        .del-btn { color: #d32f2f; text-decoration: none; font-weight: bold; margin-left: 8px; }
+        .acc-btn { color: #2e7d32; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="topbar">
+        <h2>MR.Mobile অ্যাডমিন কন্ট্রোল সেন্টার</h2>
+        <div>
+            <a href="/" target="_blank" style="color:white; margin-right:15px; text-decoration:none; font-weight:bold;">ওয়েবসাইট দেখুন ↗</a>
+            <a href="/admin/logout" style="color:#ffb6b6; text-decoration:none; font-weight:bold;">লগআউট</a>
+        </div>
+    </div>
+
+    <!-- পুরোনো ফোনের দাম ও স্টক এডিট করার টেবিল -->
+    <div class="card">
+        <h3>💰 ফোনের দাম ও স্টক পরিবর্তন করুন (Live Price & Stock Update)</h3>
+        <table>
+            <tr>
+                <th>মডেল নাম</th>
+                <th>বর্তমান বিক্রির দাম</th>
+                <th>MRP (আসল দাম)</th>
+                <th>স্টক</th>
+                <th>পরিবর্তন করুন</th>
+            </tr>
+            {% for p in phones %}
+            <tr>
+                <td><b>{{ p.name }}</b></td>
+                <form method="POST">
+                    <input type="hidden" name="edit_phone_price" value="1">
+                    <input type="hidden" name="phone_id" value="{{ p.id }}">
+                    <td><input type="number" name="new_price" value="{{ p.price }}" style="width:100px;"></td>
+                    <td><input type="number" name="new_original_price" value="{{ p.original_price }}" style="width:100px;"></td>
+                    <td><input type="number" name="new_stock" value="{{ p.stock }}" style="width:70px;"></td>
+                    <td><button type="submit" class="btn" style="padding:5px 12px; font-size:12px;">সেভ করুন</button></td>
+                </form>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- নতুন ফোন যুক্ত করা (একাধিক ছবি আপলোড) -->
+    <div class="card">
+        <h3>📱 নতুন ফোন যুক্ত করুন (একাধিক ছবি ও অটো-ডিসকাউন্ট)</h3>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="add_phone" value="1">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+                <input type="text" name="name" placeholder="মডেল নাম" required>
+                <input type="text" name="brand" placeholder="ব্র্যান্ড (Samsung/Vivo)" required>
+                <input type="text" name="ram_rom" placeholder="RAM & ROM" required>
+                <input type="number" name="price" placeholder="বিক্রির দাম (Selling Price)" required>
+                <input type="number" name="original_price" placeholder="MRP (আসল দাম)" required>
+                <input type="number" name="stock" placeholder="স্টক সংখ্যা" value="5" required>
+            </div>
+            
+            <div style="margin-top:10px;">
+                <label style="font-size:12px; font-weight:bold;">ফোনের একাধিক ছবি নির্বাচন করুন (Multiple Select):</label><br>
+                <input type="file" name="phone_files" accept="image/*" multiple required>
+            </div>
+
+            <div style="margin-top:10px;">
+                <textarea name="description" rows="2" style="width:100%;" placeholder="ফোনের বিবরণ..."></textarea>
+            </div>
+            <button type="submit" class="btn" style="margin-top:8px;">পাবলিশ করুন</button>
+        </form>
+    </div>
+
+    <!-- ব্যানার বিজ্ঞাপন যোগ ও ডিলিট -->
+    <div class="card">
+        <h3>📢 ব্যানার বিজ্ঞাপন ম্যানেজমেন্ট</h3>
+        <form method="POST" enctype="multipart/form-data" style="margin-bottom:15px;">
+            <input type="hidden" name="add_banner" value="1">
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <input type="text" name="title" placeholder="ব্যানার টাইটেল" required style="flex:2;">
+                <input type="text" name="subtitle" placeholder="ছোট বিবরণ" required style="flex:3;">
+                <input type="text" name="badge" placeholder="ট্যাগ (উদা: Offer)" style="flex:1;">
+                <input type="file" name="banner_file" accept="image/*" required style="flex:2;">
+                <button type="submit" class="btn" style="background:#ff9f00;">ব্যানার অ্যাড করুন</button>
+            </div>
+        </form>
+
+        <table>
+            <tr><th>টাইটেল</th><th>বিবরণ</th><th>অ্যাকশন</th></tr>
+            {% for b in banners %}
+            <tr>
+                <td><b>{{ b.title }}</b></td>
+                <td>{{ b.subtitle }}</td>
+                <td><a href="/admin/banner/delete/{{ b.id }}" class="del-btn" onclick="return confirm('ডিলিট করবেন?');">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- কাস্টমারদের অর্ডার ও বিল আপলোড সেকশন -->
+    <div class="card">
+        <h3>📦 অর্ডার তালিকা ও বিল আপলোড (Add Bill to Customer)</h3>
+        {% if orders %}
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>ফোন</th>
+                <th>মোট দাম</th>
+                <th>২০% পে</th>
+                <th>বাকি COD</th>
+                <th>স্ক্রিনশট</th>
+                <th>কাস্টমার ও মোবাইল</th>
+                <th>স্ট্যাটাস ও বিল আপলোড</th>
+                <th>অ্যাকশন</th>
+            </tr>
+            {% for o in orders %}
+            <tr>
+                <td>#{{ o.order_id }}</td>
+                <td><b>{{ o.phone_name }}</b></td>
+                <td>₹{{ "{:,.0f}".format(o.total_price) }}</td>
+                <td style="color:#2e7d32; font-weight:bold;">₹{{ "{:,.0f}".format(o.advance_paid) }}</td>
+                <td style="color:#d32f2f;">₹{{ "{:,.0f}".format(o.due_amount) }}</td>
+                <td>
+                    {% if o.screenshot %}
+                    <a href="{{ o.screenshot }}" target="_blank" style="color:#2874f0; font-weight:bold;">স্ক্রিনশট ↗</a>
+                    {% else %}নেই{% endif %}
+                </td>
+                <td>{{ o.customer_name }}<br><small>{{ o.customer_phone }}</small></td>
+                <td>
+                    <!-- বিল আপলোড ফর্ম -->
+                    <form method="POST" enctype="multipart/form-data" style="margin-bottom:5px;">
+                        <input type="hidden" name="upload_bill" value="1">
+                        <input type="hidden" name="order_id" value="{{ o.order_id }}">
+                        
+                        <select name="status" style="font-size:11px;">
+                            <option value="Order Placed" {% if o.status == 'Order Placed' %}selected{% endif %}>Order Placed</option>
+                            <option value="Verified & Accepted" {% if o.status == 'Verified & Accepted' %}selected{% endif %}>Verified & Accepted</option>
+                            <option value="Out for Delivery" {% if o.status == 'Out for Delivery' %}selected{% endif %}>Out for Delivery</option>
+                            <option value="Delivered" {% if o.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                        </select>
+                        <br>
+                        <input type="file" name="bill_file" accept="image/*,.pdf" style="font-size:11px; width:140px;">
+                        <button type="submit" class="btn" style="padding:3px 8px; font-size:11px;">বিল ও স্ট্যাটাস সেভ</button>
+                    </form>
+                    {% if o.bill_url %}
+                    <a href="{{ o.bill_url }}" target="_blank" style="font-size:11px; color:#2e7d32; font-weight:bold;">বিল আপলোড করা আছে ✔</a>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/admin/order/delete/{{ o.order_id }}" class="del-btn" onclick="return confirm('ডিলিট করবেন?');">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p style="color:#777; margin-top:10px;">কোনো অর্ডার আসেনি।</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

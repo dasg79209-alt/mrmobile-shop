@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - MR.Mobile</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f1f3f6; margin: 0; padding: 25px 15px; }
+        .box { max-width: 800px; margin: 0 auto; }
+        .search-card { background: white; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .order-card { background: white; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 15px; display: flex; gap: 20px; }
+        .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; display: inline-block; }
+        .badge-placed { background: #fff3cd; color: #856404; }
+        .badge-accepted { background: #cce5ff; color: #004085; }
+        .badge-delivery { background: #d4edda; color: #155724; }
+        .bill-btn { background: #2874f0; color: white; text-decoration: none; padding: 8px 15px; border-radius: 3px; font-size: 13px; font-weight: bold; display: inline-block; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h2>📦 আপনার অর্ডার ও ট্র্যাকিং</h2>
+            <a href="/" style="color:#2874f0; text-decoration:none; font-weight:bold;">← হোমপেজ</a>
+        </div>
+
+        <div class="search-card">
+            <form action="/my-orders" method="GET" style="display:flex; gap:10px;">
+                <input type="tel" name="phone" value="{{ phone }}" placeholder="আপনার ১০ ডিজিটের মোবাইল নম্বর দিন" required style="flex:1; padding:10px; border:1px solid #ccc; border-radius:3px;">
+                <button type="submit" style="background:#fb641b; color:white; border:none; padding:10px 20px; font-weight:bold; cursor:pointer; border-radius:3px;">অর্ডার ট্র্যাক করুন</button>
+            </form>
+        </div>
+
+        {% if orders %}
+            {% for o in orders %}
+            <div class="order-card">
+                <img src="{{ o.phone_image }}" style="width:90px; height:90px; object-fit:contain;">
+                <div style="flex:1;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <h3 style="margin:0 0 5px;">{{ o.phone_name }}</h3>
+                        <span class="status-badge 
+                            {% if o.status == 'Order Placed' %}badge-placed
+                            {% elif o.status == 'Verified & Accepted' %}badge-accepted
+                            {% else %}badge-delivery{% endif %}">
+                            ● {{ o.status }}
+                        </span>
+                    </div>
+
+                    <div style="font-size:13px; color:#555; margin:4px 0;">Order ID: #{{ o.order_id }} | মোট দাম: ₹{{ "{:,.0f}".format(o.total_price) }}</div>
+                    <div style="font-size:13px; color:#2e7d32; font-weight:bold;">২০% অগ্রিম পরিশোধিত: ₹{{ "{:,.0f}".format(o.advance_paid) }} (বাকি ক্যাশ: ₹{{ "{:,.0f}".format(o.due_amount) }})</div>
+
+                    <!-- বিল ডাউনলোড / ভিউ বাটন -->
+                    {% if o.bill_url %}
+                    <a href="{{ o.bill_url }}" target="_blank" class="bill-btn">📄 অফিশিয়াল বিল দেখুন / ডাউনলোড করুন</a>
+                    {% else %}
+                    <p style="font-size:12px; color:#888; margin-top:8px;">অর্ডার ভেরিফাই হলে দোকান থেকে বিল আপলোড করে দেওয়া হবে।</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% elif phone %}
+            <p style="text-align:center; color:#777; margin-top:30px;">এই মোবাইল নম্বরে কোনো অর্ডার পাওয়া যায়নি।</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>
