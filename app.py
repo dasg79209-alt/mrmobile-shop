@@ -18,7 +18,7 @@ ADMIN_PASSWORD = "admin"
 SHOP_UPI_ID = "8927294076@naviaxis"  # আপনার আসল UPI ID এখানে বসাবেন
 
 # ডাইনামিক স্লাইডার ব্যানার (যার মধ্যে শোরুম অফারও ঘুরবে)
-banners = 
+banners = [
     {
         "id": 1,
         "title": "Mister Mobile Now at Gidhni, Jhargram, Silda",
