@@ -36,6 +36,7 @@ banners = [
 ]
 
 # একাধিক ছবি সহ ফোনের তালিকা
+# একাধিক ছবি সহ ফোনের তালিকা
 phones = [
     {
         "id": 1,
@@ -49,9 +50,8 @@ phones = [
         "rating": 4.7,
         "description": "Snapdragon 8 Gen 3 প্রসেসর, 200MP কোয়াড ক্যামেরা সেটআপ, 5000mAh দীর্ঘস্থায়ী ব্যাটারি এবং টাইটানিয়াম ফ্রেম।",
         "images": [
-            "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=700&q=80",
-            "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=700&q=80",
-            "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=700&q=80"
+            "https://images.samsung.com/is/image/samsung/p6pim/in/2401/gallery/in-galaxy-s24-s928-sm-s928bzkqins-539573039?$650_519_PNG$",
+            "https://images.samsung.com/is/image/samsung/p6pim/in/2401/gallery/in-galaxy-s24-s928-sm-s928bzkqins-539573040?$650_519_PNG$"
         ],
         "reviews": [
             {"user": "Sourav", "comment": "অসাধারণ ক্যামেরা কোয়ালিটি এবং ব্যাটারি ব্যাকআপ দারুণ!", "stars": 5}
@@ -69,8 +69,8 @@ phones = [
         "rating": 4.8,
         "description": "A17 Pro চিপসেট, অ্যাকশন বাটন, সুপার রেটিনা XDR ডিসপ্লে এবং স্টুডিও গ্রেড প্রো ক্যামেরা সিস্টেম।",
         "images": [
-            "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=700&q=80",
-            "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=700&q=80"
+            "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-1inch-naturaltitanium?wid=5120&hei=2880&fmt=p-jpg&qlt=80",
+            "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-1inch-blacktitanium?wid=5120&hei=2880&fmt=p-jpg&qlt=80"
         ],
         "reviews": [
             {"user": "Pooja", "comment": "ন্যাচারাল টাইটানিয়াম ফিনিশ অসাধারণ!", "stars": 5}
@@ -88,15 +88,13 @@ phones = [
         "rating": 4.4,
         "description": "120W হাইপারচার্জ, 200MP OIS ক্যামেরা, কার্ভড AMOLED ডিসপ্লে এবং IP68 ওয়াটার রেজিস্ট্যান্স।",
         "images": [
-            "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=700&q=80",
-            "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=700&q=80"
+            "https://i02.appmifile.com/182_operator_in/03/01/2024/7610ebfa108a73b40ba2045cfd37e2c9.png"
         ],
         "reviews": [
             {"user": "Rahul", "comment": "বাজেটের মধ্যে সেরা অল-রাউন্ডার ফোন!", "stars": 4}
         ]
     }
 ]
-
 orders = []
 
 def parse_budget_query(query):
